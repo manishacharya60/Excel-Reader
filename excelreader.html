@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-51BNJL56NT"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-51BNJL56NT");
+    </script>
+
+    <!-- meta tags -->
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover"
+    />
+    <meta
+      property="og:description"
+      content="Connecting the brightest young minds in Nepal to create and explore."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="next-head-count" content="9" />
+    <meta name="theme-color" content="#000" />
+    <title>Incubate Nepal Application Reader</title>
+
+    <!-- favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="assets" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="assets/favicon/favicon-32x32.webp"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="assets/favicon/favicon-16x16.webp"
+    />
+    <link rel="manifest" href="assets/favicon/site.webmanifest" />
+    <link rel="shortcut icon" href="assets/favicon/favicon.ico" />
+    <meta
+      name="msapplication-config"
+      content="assets/favicon/browserconfig.xml"
+    />
+    <meta name="msapplication-TileColor" content="#ffffff" />
+
+    <!-- css -->
+    <!-- Compiled and minified CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="css/main_style.css" />
+    <link rel="stylesheet" href="css/excelreader.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+
+    <!-- icons -->
+    <link
+      rel="stylesheet"
+      href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="file-container">
+      <div class="container">
+        <input type="file" id="file-input" multiple />
+        <label for="file-input">
+          <i class="las la-file-excel"></i>
+          &nbsp; Choose Files To Upload
+        </label>
+        <div id="num-of-files">No Files Choosen</div>
+        <ul id="files-list"></ul>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <div class="container">
+        <div id="excel_data" class="mt-5 excel-table"></div>
+      </div>
+    </div>
+
+    <!-- scripts -->
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"
+    ></script>
+
+    <script>
+      let fileInput = document.getElementById("file-input");
+      let fileList = document.getElementById("files-list");
+      let numOfFiles = document.getElementById("num-of-files");
+
+      fileInput.addEventListener("change", () => {
+        fileList.innerHTML = "";
+        numOfFiles.textContent = `${fileInput.files.length} Files Selected`;
+
+        for (i of fileInput.files) {
+          let reader = new FileReader();
+          let listItem = document.createElement("li");
+          let fileName = i.name;
+          let fileSize = (i.size / 1024).toFixed(1);
+          listItem.innerHTML = `<p>${fileName}</p><p>${fileSize}KB</p>`;
+          if (fileSize >= 1024) {
+            fileSize = (fileSize / 1024).toFixed(1);
+            listItem.innerHTML = `<p>${fileName}</p><p>${fileSize}MB</p>`;
+          }
+          fileList.appendChild(listItem);
+        }
+      });
+    </script>
+
+    <script>
+      const excel_file = document.getElementById("file-input");
+
+      excel_file.addEventListener("change", (event) => {
+        if (
+          ![
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "application/vnd.ms-excel",
+          ].includes(event.target.files[0].type)
+        ) {
+          document.getElementById("excel_data").innerHTML =
+            '<div class="alert alert-danger">Only .xlsx or .xls file format are allowed</div>';
+
+          excel_file.value = "";
+
+          return false;
+        }
+
+        var reader = new FileReader();
+
+        reader.readAsArrayBuffer(event.target.files[0]);
+
+        reader.onload = function (event) {
+          var data = new Uint8Array(reader.result);
+
+          var work_book = XLSX.read(data, { type: "array" });
+
+          var sheet_name = work_book.SheetNames;
+
+          var sheet_data = XLSX.utils.sheet_to_json(
+            work_book.Sheets[sheet_name[0]],
+            { header: 1 }
+          );
+
+          if (sheet_data.length > 0) {
+            var table_output = "";
+
+            for (var row = 0; row < sheet_data.length; row++) {
+              if (row != 0 && sheet_data[row][3] != null) {
+                table_output += "<div class='data-card'>";
+                for (var cell = 0; cell < sheet_data[row].length; cell++) {
+                  table_output +=
+                    "<p>" +
+                    "<span class='data-title'>" +
+                    sheet_data[0][cell] +
+                    "</span>" +
+                    "</br>" +
+                    sheet_data[row][cell] +
+                    "</p>";
+                }
+              }
+              table_output += "</div>";
+            }
+
+            document.getElementById("excel_data").innerHTML = table_output;
+          }
+
+          excel_file.value = "";
+        };
+      });
+    </script>
+  </body>
+</html>
