@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&family=Lato&family=Poppins:wght@300;800&family=Roboto&display=swap');
+
 * {
   padding: 0;
   margin: 0;
@@ -6,6 +8,7 @@
 }
 
 body {
+  font-family: "Lato";
   background-color: #f9f0f0 ;
 }
 
@@ -68,14 +71,51 @@ ul {
 }
 
 .table-container .data-card{
-  border-radius: 20px;
-  box-shadow: 0 1.25em 2.18em rgb(1, 28, 71, 0.3);
-  background: #ffffff;
+  /* border-radius: 20px; */
+  /* box-shadow: 0 1.25em 2.18em rgb(1, 28, 71, 0.3); */
+  background: transparent;
   padding: 2.5em 2em;
-  margin: 1.5em;
+  margin: 3em;
+}
+
+.table-container .data-card .category-card{
+  border-radius: 10px;
+  box-shadow: 0 0.25em 0.88em rgb(1, 28, 71, 0.1);
+  background: #ffffff;
+  margin: 1.5em 0;
+}
+
+.table-container .data-card .category-card .category-container{
+  padding: 1em 2em;
+}
+
+.table-container .data-card .category-card .category-title{
+  width: 100%;
+  padding: 0.75em 2em;
+  background: #b20030;
+  border-radius: 10px 10px 0 0;
+}
+
+.table-container .data-card .category-card .category-title h4{
+  letter-spacing: 0.01em;
+  font-size: 1.2em;
+  color: #fafafa;
+  font-family: "Roboto";
 }
 
 .table-container .data-card .data-title{
   font-weight: bold;
+  font-family: "Lato";
   margin-bottom: 1em;
+}
+
+.table-container .data-card p{
+  font-family: "Lato";
+}
+
+.carousel-control-prev, .carousel-control-next{
+  width: 50px;
+  height: 50px;
+  background: black;
+  border-radius: 50%;
 }
