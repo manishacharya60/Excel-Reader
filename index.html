@@ -191,6 +191,32 @@
     </script>
 
     <script>
+      function ExcelDateToJSDate(serial) {
+        var utc_days = Math.floor(serial - 25569);
+        var utc_value = utc_days * 86400;
+        var date_info = new Date(utc_value * 1000);
+
+        var fractional_day = serial - Math.floor(serial) + 0.0000001;
+
+        var total_seconds = Math.floor(86400 * fractional_day);
+
+        var seconds = total_seconds % 60;
+
+        total_seconds -= seconds;
+
+        var hours = Math.floor(total_seconds / (60 * 60));
+        var minutes = Math.floor(total_seconds / 60) % 60;
+
+        return new Date(
+          date_info.getFullYear(),
+          date_info.getMonth(),
+          date_info.getDate(),
+          hours,
+          minutes,
+          seconds
+        ).toLocaleDateString("en-US");
+      }
+
       const excel_file = document.getElementById("file-input");
 
       excel_file.addEventListener("change", (event) => {
@@ -227,6 +253,7 @@
           if (sheet_data.length > 0) {
             var table_output = "";
             var carousel_active = "";
+            var timestamp_checker = "";
 
             for (var row = 0; row < sheet_data.length; row++) {
               if (row != 0 && sheet_data[row][3] != null) {
@@ -240,13 +267,17 @@
                   "<div class='category-title'><h4>Personal Information</h4></div>" +
                   "<div class='category-container'>";
                 for (var cell = 0; cell <= 10; cell++) {
+                  timestamp_checker =
+                    cell == 0 || cell == 4
+                      ? ExcelDateToJSDate(sheet_data[row][cell])
+                      : sheet_data[row][cell];
                   table_output +=
                     "<p>" +
                     "<span class='data-title'>" +
                     sheet_data[0][cell] +
                     "</span>" +
                     "</br>" +
-                    sheet_data[row][cell] +
+                    timestamp_checker +
                     "</p>";
                 }
                 table_output +=

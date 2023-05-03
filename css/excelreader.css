@@ -74,8 +74,9 @@ ul {
   /* border-radius: 20px; */
   /* box-shadow: 0 1.25em 2.18em rgb(1, 28, 71, 0.3); */
   background: transparent;
-  padding: 2.5em 2em;
+  padding: 0em 2em;
   margin: 3em;
+  margin-top: 0;
 }
 
 .table-container .data-card .category-card{
